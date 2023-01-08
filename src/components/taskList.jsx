@@ -1,50 +1,29 @@
 import React, { useReducer, useState } from 'react';
-import { Button, ButtonGroup, Checkbox, TextField } from '@mui/material';
 
-// TODO: Refactor inline logic and Style
-// TODO: Make models and components to clear the code
+//? Material UI
+import { ButtonGroup } from '@mui/material';
 
-// Actions
-const ADD_TASK = 'ADD_TASK'
-const DELETE_TASK = 'DELETE_TASK'
-const TOGGLE_VISIBILITY = 'TOGGLE_VISIBILITY'
+//* Reducer
+import Reducer from '../store/reducers/taskReducer';
 
-// Reducer
+//* Actions
+import { ADD_TASK, DELETE_TASK, TOGGLE_VISIBILITY } from '../store/actions/actions'
+import { InputField } from './styledComponents/InputField';
+import { ActiveBox } from './styledComponents/ActiveBox';
+import { DeleteButton } from './styledComponents/DeleteButton';
+import { AddButton } from './styledComponents/AddButton';
 
-const Reducer = (state, action) => {
-    
-    switch (action.type) {
-        case ADD_TASK:
-            return {
-                todos: [...state.todos,
-                    {
-                    text:action.text,
-                    completed:false
-                }
-            ]
-            }
-        case TOGGLE_VISIBILITY:
-            return {
-                todos: state.todos.map((tsk, index) => 
-                index === action.index ? {...tsk, completed : !tsk.completed} : tsk
-            )}
-        case DELETE_TASK:
-            return {
-                todos:state.todos.filter((tsk, index) => index !== action.index)
-            }
-
-    
-        default:
-            return state
-    }
-}
+// TODO: make logic for temporary render the error of the task description instead of erase by a button
+// TODO: create a box with auto scrollbar for contain the task
+// TODO: flex the button to the end of the box
 
 const TaskList = () => {
 
-    const [{todos}, dispatch] = useReducer(Reducer, {todos:[]})
+    let initialState = { tasks: [] }
+    const [{tasks}, dispatch] = useReducer(Reducer, initialState)
 
     const [text, setText] = useState();
-
+    
     return (
         <div>
             <h2>
@@ -53,52 +32,50 @@ const TaskList = () => {
             <form onSubmit={
                 e => {
                     e.preventDefault();
-                    dispatch({type: 'ADD_TASK', text})
+                    dispatch({type: ADD_TASK, text})
                     setText("")
                 }
             }>
-                <TextField id="filled-basic" 
-                        label="Add Task" 
-                        variant="outlined" 
-                        color="success"
-                        helperText="Please enter the description"
-                        size= "small"
-                        style={{marginRight: '10px'}}
-                        type='text' 
-                        value ={text} 
+                <InputField value ={text} 
                         onChange={e => setText(e.target.value)}
-
-                        />
-            <Button 
-                color="success" 
-                variant='contained' 
-                type='submit'
-                > add Task
-            </Button>
+                />
+                
+            <AddButton> add Task </AddButton>
             </form>
-            {todos.map(( tsk, index ) => (
+            {tasks.map(( tsk, index ) => (
                     <div key={index}>
+
+                    {
+                        tsk.text !== '' 
+                        ?
+                        <>
                         <span 
-                        style={tsk.completed ? {textDecoration: 'line-through'}: {textDecoration: 'none'}}
-                        >{tsk.text}</span>  - 
+                        style={tsk.completed ? {textDecoration: 'line-through'} : {textDecoration: 'none'}}
+                        >  {tsk.text}   
+                        </span>  - 
+
                         <ButtonGroup>
-                        <Checkbox 
-                        color="success"
-                        sx={{ '& .MuiSvgIcon-root': { fontSize: 28 } }}
-                        onClick={() => dispatch({type: TOGGLE_VISIBILITY, index})}
-                        
-                        />
-                        
-                        <Button
-                        variant='contained'
-                        color='error'
-                        onClick={() => dispatch({type: DELETE_TASK, index})}
-                        style={{cursor:'pointer'}}
-                        >Delete Task</Button>
-
-
+                            <ActiveBox
+                                onClick={() => dispatch({type: TOGGLE_VISIBILITY, index})}
+                            />
+                            
+                            <DeleteButton
+                                onClick={() => dispatch({type: DELETE_TASK, index})}
+                            >Delete Task</DeleteButton>
                         </ButtonGroup>
+                        </>
+                        : 
+                        <>
+                            <span style={{color: 'red', textDecoration: 'underline'}}>
+                                TASK MUST HAVE A DESCRIPTION
+                            </span>  -  <DeleteButton
+                                onClick={() => dispatch({type: DELETE_TASK, index})}
+                            >I Understand</DeleteButton>
+                        </>
+                        
+                    }
                     </div>
+                    
             ))}
         </div>
     );
