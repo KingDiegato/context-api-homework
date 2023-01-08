@@ -8,12 +8,16 @@ import Reducer from '../store/reducers/taskReducer';
 
 //* Actions
 import { ADD_TASK, DELETE_TASK, TOGGLE_VISIBILITY } from '../store/actions/actions'
+
+//* Styled components
 import { InputField } from './styledComponents/InputField';
 import { ActiveBox } from './styledComponents/ActiveBox';
 import { DeleteButton } from './styledComponents/DeleteButton';
 import { AddButton } from './styledComponents/AddButton';
 
-// TODO: make logic for temporary render the error of the task description instead of erase by a button
+import './animation.css'
+
+// TODO: improve temporary render cause index make multiple error render impossibility to delete
 // TODO: create a box with auto scrollbar for contain the task
 // TODO: flex the button to the end of the box
 
@@ -24,6 +28,7 @@ const TaskList = () => {
 
     const [text, setText] = useState();
     
+
     return (
         <div>
             <h2>
@@ -66,16 +71,15 @@ const TaskList = () => {
                         </>
                         : 
                         <>
-                            <span style={{color: 'red', textDecoration: 'underline'}}>
-                                TASK MUST HAVE A DESCRIPTION
-                            </span>  -  <DeleteButton
-                                onClick={() => dispatch({type: DELETE_TASK, index})}
-                            >I Understand</DeleteButton>
+                            <span
+                            className='animation'
+                            onAnimationEnd={() => dispatch ({type: DELETE_TASK, index})}
+                            style={{color: 'tomato', textDecoration: 'underline'}}
+                            >TASK MUST HAVE A DESCRIPTION</span> 
                         </>
-                        
+
                     }
                     </div>
-                    
             ))}
         </div>
     );

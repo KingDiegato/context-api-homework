@@ -1,0 +1,24 @@
+.animation {
+    animation: transitor 5s linear;
+}
+
+@keyframes transitor{
+    0% {
+        color: tomato;
+    }
+    20% {
+        color: red;
+    }
+    40% {
+        color: tomato;
+    }
+    60% {
+        color: red;
+    }
+    80% {
+        color: tomato;
+    }
+    100% {
+        color: red;
+    }
+}
