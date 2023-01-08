@@ -1,6 +1,5 @@
 import React, { useReducer, useState } from 'react';
-import Button from '@mui/material/Button'
-import { ButtonGroup, Checkbox, TextField } from '@mui/material';
+import { Button, ButtonGroup, Checkbox, TextField } from '@mui/material';
 
 // TODO: Refactor inline logic and Style
 // TODO: Make models and components to clear the code
@@ -70,7 +69,12 @@ const TaskList = () => {
                         onChange={e => setText(e.target.value)}
 
                         />
-            <Button color="success" variant='contained' type='submit'> add Task</Button>
+            <Button 
+                color="success" 
+                variant='contained' 
+                type='submit'
+                > add Task
+            </Button>
             </form>
             {todos.map(( tsk, index ) => (
                     <div key={index}>
